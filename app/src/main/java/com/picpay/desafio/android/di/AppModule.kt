@@ -8,7 +8,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -20,6 +22,8 @@ object AppModule {
     fun provideUserApi(): UserApi{
         return Retrofit.Builder()
             .baseUrl("https://609a908e0f5a13001721b74e.mockapi.io/picpay/api/")
+            .client(OkHttpClient())
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(UserApi::class.java)
     }

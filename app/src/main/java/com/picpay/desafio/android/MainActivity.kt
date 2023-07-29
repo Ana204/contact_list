@@ -42,6 +42,9 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         retrofit.create(PicPayService::class.java)
     }
 
+
+
+
     override fun onResume() {
         super.onResume()
 

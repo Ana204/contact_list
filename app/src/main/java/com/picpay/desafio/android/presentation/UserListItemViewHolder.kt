@@ -14,7 +14,6 @@ class UserListItemViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(user: UserEntity) {
-        Log.d("UserListItem","USER Bind - $user")
         binding.name.text = user.name
         binding.username.text = user.username
         binding.progressBar.visibility = View.VISIBLE

@@ -2,34 +2,44 @@ package com.picpay.desafio.android.domain.useCase
 
 import android.util.Log
 import com.picpay.desafio.android.data.local.entity.UserEntity
-import com.picpay.desafio.android.domain.model.User
-import com.picpay.desafio.android.domain.repository.UserRepository
-import kotlinx.coroutines.flow.Flow
+import com.picpay.desafio.android.domain.repository.SharedPreferencesRepository
+import com.picpay.desafio.android.domain.repository.UserRepositoryCache
+import com.picpay.desafio.android.domain.repository.UserRepositoryRemote
+import java.util.Calendar
+import javax.inject.Inject
 
-class UserUseCase(
-    private val repository: UserRepository
+class UserUseCase @Inject constructor (
+    private val repositoryRemote: UserRepositoryRemote,
+    private val sharedPreferencesRepository: SharedPreferencesRepository,
+    private val repositoryCache: UserRepositoryCache,
+    private val calendar: Calendar
 ) {
 
-    private suspend fun saveApiDataInLocalDatabase() : List<UserEntity> {
-        val listUserApi = repository.saveUsersToDataBase()
-        Log.d("USER-UseCase", "LISTA DA API $listUserApi")
-        return listUserApi
-    }
-
-    suspend fun getUserFromLocal() : List<UserEntity>{
-        val listUserLocal = repository.getAllUser()
+    suspend fun getUser() : List<UserEntity>{
+        val listUserLocal = repositoryCache.getAllUser()
         var listSavedInDatabase: List<UserEntity>
+
+        val currentTime = calendar.timeInMillis
+
+        val cacheValidUntil = currentTime + 300000
 
 
         if (listUserLocal.isEmpty()){
-            listSavedInDatabase = saveApiDataInLocalDatabase()
-
-            Log.d("USER-UseCase", "Fazer chamada na api e salvar Lista local $listSavedInDatabase")
+            listSavedInDatabase = repositoryRemote.getUserFromApi()
+            repositoryCache.upsertAll(listSavedInDatabase)
+            sharedPreferencesRepository.saveTime(cacheValidUntil.toString())
 
         }else{
-            listSavedInDatabase = listUserLocal
+           val getTime = sharedPreferencesRepository.getTime()?.toLong()!!
 
-            Log.i("USER-UseCase", "Lista salva no banco de dados local $listUserLocal")
+            listSavedInDatabase = if(getTime > currentTime){
+                listUserLocal
+            }else{
+                repositoryRemote.getUserFromApi()
+            }
+
+            Log.i("", "timeMillis Atual - ${getTime}")
+
         }
         return listSavedInDatabase
     }

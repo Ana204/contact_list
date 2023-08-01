@@ -2,11 +2,15 @@ package com.picpay.desafio.android.di
 
 import androidx.room.Room
 import android.app.Application
+import android.content.Context
 import com.picpay.desafio.android.data.local.UserDataBase
 import com.picpay.desafio.android.data.remote.UserApi
-import com.picpay.desafio.android.data.repository.UserRepositoryImpl
-import com.picpay.desafio.android.domain.repository.UserRepository
-import com.picpay.desafio.android.domain.useCase.UserUseCase
+import com.picpay.desafio.android.data.repository.SharedPreferencesRepositoryImpl
+import com.picpay.desafio.android.data.repository.UserRepositoryCacheImpl
+import com.picpay.desafio.android.data.repository.UserRepositoryRemoteImpl
+import com.picpay.desafio.android.domain.repository.SharedPreferencesRepository
+import com.picpay.desafio.android.domain.repository.UserRepositoryCache
+import com.picpay.desafio.android.domain.repository.UserRepositoryRemote
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +18,7 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Calendar
 import javax.inject.Singleton
 
 @Module
@@ -36,18 +41,35 @@ object AppModule {
     @Singleton
     fun provideUserRepository(
         api: UserApi,
-        db: UserDataBase
-    ): UserRepository {
-        return UserRepositoryImpl(
+    ): UserRepositoryRemote {
+        return UserRepositoryRemoteImpl(
             userApi = api,
-            userDao = db.dao
         )
     }
 
     @Provides
     @Singleton
-    fun provideUserUseCase(repository: UserRepository): UserUseCase {
-        return UserUseCase(repository)
+    fun provideUserRepositoryCache(
+        db: UserDataBase
+    ) : UserRepositoryCache {
+        return UserRepositoryCacheImpl(
+            userDao = db.dao
+        )
+    }
+    @Provides
+    @Singleton
+    fun provideSharedPreferenceRepository(
+        application: Application,
+    ): SharedPreferencesRepository {
+        return SharedPreferencesRepositoryImpl(
+            application = application,
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideCalendar(): Calendar{
+        return Calendar.getInstance()
     }
 
     @Provides

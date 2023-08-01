@@ -28,7 +28,7 @@ class MainActivityViewModel @Inject constructor (
      private fun listUser() {
         CoroutineScope(Dispatchers.IO).launch {
 
-            val listUserLocal = userUseCase.getUserFromLocal()
+            val listUserLocal = userUseCase.getUser()
 
             Log.d("View-Model - ", "USUARIO LOCAL $listUserLocal")
 

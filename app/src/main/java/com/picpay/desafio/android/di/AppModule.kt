@@ -1,5 +1,8 @@
 package com.picpay.desafio.android.di
 
+import androidx.room.Room
+import android.app.Application
+import com.picpay.desafio.android.data.local.UserDataBase
 import com.picpay.desafio.android.data.remote.UserApi
 import com.picpay.desafio.android.data.repository.UserRepositoryImpl
 import com.picpay.desafio.android.domain.repository.UserRepository
@@ -19,7 +22,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserApi(): UserApi{
+    fun provideUserApi(): UserApi {
         return Retrofit.Builder()
             .baseUrl("https://609a908e0f5a13001721b74e.mockapi.io/picpay/api/")
             .client(OkHttpClient())
@@ -31,13 +34,29 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(api: UserApi) : UserRepository{
-        return UserRepositoryImpl(api)
+    fun provideUserRepository(
+        api: UserApi,
+        db: UserDataBase
+    ): UserRepository {
+        return UserRepositoryImpl(
+            userApi = api,
+            userDao = db.dao
+        )
     }
 
     @Provides
     @Singleton
-    fun provideUserUseCase(repository: UserRepository) : UserUseCase {
+    fun provideUserUseCase(repository: UserRepository): UserUseCase {
         return UserUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppDataBase(application: Application): UserDataBase {
+        return Room.databaseBuilder(
+            application,
+            UserDataBase::class.java,
+            "users.db"
+        ).build()
     }
 }

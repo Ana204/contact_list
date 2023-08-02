@@ -4,6 +4,7 @@ import com.picpay.desafio.android.data.local.entity.UserEntity
 import com.picpay.desafio.android.domain.repository.SharedPreferencesRepository
 import com.picpay.desafio.android.domain.repository.UserRepositoryCache
 import com.picpay.desafio.android.domain.repository.UserRepositoryRemote
+import java.lang.Exception
 import javax.inject.Inject
 
 class UserUseCase @Inject constructor (
@@ -17,17 +18,20 @@ class UserUseCase @Inject constructor (
         val currentTime = System.currentTimeMillis()
         val cacheValidUntil = currentTime + 300000
 
-        //se o tempo expirou, buscar os usuarios da API, atualiza o cache eo tempo de cache
-        return if (listUsersLocal.isEmpty() || isCacheExpired(currentTime)) {
-            val usersFromApi = repositoryRemote.getUserFromApi()
-            repositoryCache.upsertAll(usersFromApi)
-            sharedPreferencesRepository.saveTime(cacheValidUntil)
+        return try {
+            //se o tempo expirou, buscar os usuarios da API, atualiza o cache eo tempo de cache
+            if (listUsersLocal.isEmpty() || isCacheExpired(currentTime)) {
+                val usersFromApi = repositoryRemote.getUserFromApi()
+                repositoryCache.upsertAll(usersFromApi)
+                sharedPreferencesRepository.saveTime(cacheValidUntil)
 
-            usersFromApi
-        } else {
-            listUsersLocal //retorna a lista local
+                usersFromApi
+            } else {
+                listUsersLocal //retorna a lista local
+            }
+        }catch (e: Exception){
+            emptyList()
         }
-
     }
 
     private fun isCacheExpired(currentTime: Long): Boolean {

@@ -34,14 +34,13 @@ class UserRepositoryRemoteImpl(
                         }
                         continuation.resume(responseUserEntity)
                     } else{
-                        val exception = response.errorBody().toString()
+                        val exception = response.errorBody()?.string() ?: "Falha ao buscar contatos"
                         continuation.resumeWithException(RuntimeException(exception))
                     }
                 }
 
                 override fun onFailure(call: Call<List<User>>, t: Throwable) {
-                    //TODO retornar erro para view
-                    Log.d("UserRepositoryRemoteImpl ", "OnFailure ${t.message}")
+                    continuation.resumeWithException(t)
                 }
             })
         }

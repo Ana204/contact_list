@@ -16,16 +16,21 @@ class MainActivityViewModel @Inject constructor (
     private val userUseCase: UserUseCase
 ) : ViewModel() {
 
-    private val _listUser = MutableStateFlow(MainActivityUiState())
-    val listUser = _listUser.asStateFlow()
+    private val _state = MutableStateFlow(MainActivityUiState())
+    val state = _state.asStateFlow()
 
     init {
         listUser()
     }
      private fun listUser() {
         CoroutineScope(Dispatchers.IO).launch {
-            val listUsers = userUseCase.getUsers()
-            _listUser.update { state -> state.copy(listUser = listUsers) }
+            try {
+                val listUsers = userUseCase.getUsers()
+                _state.update { stateListUsers -> stateListUsers.copy(listUser = listUsers) }
+            }catch (e: Exception){
+                _state.update { stateError -> stateError.copy(error = e.message!!) }
+            }
+
         }
     }
 }

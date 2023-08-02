@@ -38,47 +38,14 @@ class MainActivity : AppCompatActivity() {
 
         progressBar.visibility = View.VISIBLE
 
-        Log.e("MainActivity ", "OnCreate")
-
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.listUser
-                    .flowWithLifecycle(lifecycle).collect{
-                        Log.i("MAIN ACTIVITY ", "State -> $it")
-
+                    .flowWithLifecycle(lifecycle).collect{ stateListUsers ->
                         progressBar.visibility = View.GONE
-                        adapter.users = it.listUser
+                        adapter.users = stateListUsers.listUser
                     }
             }
-
-            //val listUser = viewModel.listUser()
-
         }
-
-       //val userLocal =  viewModel.listUserLocal()
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-        Log.e("MainActivity ", "onStart")
-    }
-    override fun onRestart() {
-        super.onRestart()
-        Log.e("MainActivity ", "onRestart")
-    }
-    override fun onPause() {
-        super.onPause()
-        Log.e("MainActivity ", "onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.e("MainActivity ", "onPause")
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-
-        Log.e("MainActivity ", "onDestroy")
     }
 }

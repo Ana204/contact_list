@@ -2,7 +2,7 @@ package com.picpay.desafio.android.domain.repository
 
 interface SharedPreferencesRepository {
 
-    fun saveTime(timeMilliseconds: String)
+    fun saveTime(timeMilliseconds: Long)
 
-    fun getTime() : String?
+    fun getTime() : Long
 }

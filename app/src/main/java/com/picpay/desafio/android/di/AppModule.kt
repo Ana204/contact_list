@@ -68,12 +68,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideCalendar(): Calendar{
-        return Calendar.getInstance()
-    }
-
-    @Provides
-    @Singleton
     fun provideAppDataBase(application: Application): UserDataBase {
         return Room.databaseBuilder(
             application,

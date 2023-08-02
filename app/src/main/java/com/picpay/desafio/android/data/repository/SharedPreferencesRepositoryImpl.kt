@@ -12,11 +12,11 @@ class SharedPreferencesRepositoryImpl (
 
     private val sharedPreferences: SharedPreferences = application.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE)
 
-    override fun saveTime(timeMilliseconds: String) {
-      sharedPreferences.edit().putString("timeMilliseconds", timeMilliseconds).apply()
+    override fun saveTime(timeMilliseconds: Long) {
+      sharedPreferences.edit().putLong("timeMilliseconds", timeMilliseconds).apply()
     }
 
-    override fun getTime(): String? {
-        return sharedPreferences.getString("timeMilliseconds" , null)
+    override fun getTime(): Long {
+        return sharedPreferences.getLong("timeMilliseconds" , 0)
     }
 }

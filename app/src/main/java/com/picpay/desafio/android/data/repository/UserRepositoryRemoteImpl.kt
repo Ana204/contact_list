@@ -1,7 +1,6 @@
 package com.picpay.desafio.android.data.repository
 
 import android.util.Log
-import com.picpay.desafio.android.data.local.dao.UserDao
 import com.picpay.desafio.android.data.local.entity.UserEntity
 import com.picpay.desafio.android.data.remote.UserApi
 import com.picpay.desafio.android.domain.model.User
@@ -41,6 +40,7 @@ class UserRepositoryRemoteImpl(
                 }
 
                 override fun onFailure(call: Call<List<User>>, t: Throwable) {
+                    //TODO retornar erro para view
                     Log.d("UserRepositoryRemoteImpl ", "OnFailure ${t.message}")
                 }
             })

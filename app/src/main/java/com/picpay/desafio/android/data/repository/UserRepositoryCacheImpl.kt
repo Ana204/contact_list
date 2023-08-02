@@ -14,7 +14,6 @@ class UserRepositoryCacheImpl(
     }
 
     override suspend fun upsertAll(user: List<UserEntity>) {
-        Log.d("User Repository ", "USER ENTITIES $user")
         userDao.upsertAll(user)
     }
 

@@ -49,6 +49,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providerCalendar(): Calendar{
+        return Calendar.getInstance()
+    }
+
+    @Provides
+    @Singleton
     fun provideUserRepositoryCache(
         db: UserDataBase
     ) : UserRepositoryCache {

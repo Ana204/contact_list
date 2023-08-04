@@ -5,17 +5,19 @@ import com.picpay.desafio.android.domain.repository.SharedPreferencesRepository
 import com.picpay.desafio.android.domain.repository.UserRepositoryCache
 import com.picpay.desafio.android.domain.repository.UserRepositoryRemote
 import java.lang.Exception
+import java.util.Calendar
 import javax.inject.Inject
 
 class UserUseCase @Inject constructor (
     private val repositoryRemote: UserRepositoryRemote,
     private val sharedPreferencesRepository: SharedPreferencesRepository,
     private val repositoryCache: UserRepositoryCache,
+    private val calendar: Calendar
 ) {
 
     suspend fun getUsers() : List<UserEntity>{
         val listUsersLocal = repositoryCache.getAllUser()
-        val currentTime = System.currentTimeMillis()
+        val currentTime = calendar.timeInMillis
         val cacheValidUntil = currentTime + 300000
 
         return try {
@@ -39,4 +41,5 @@ class UserUseCase @Inject constructor (
         return getTime < currentTime
     }
 
+    //[UserEntity(id=1, img=image, name=ana, username=ana204)]
 }

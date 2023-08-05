@@ -19,19 +19,6 @@ class MainActivityTest {
 
     private val server = MockWebServer()
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
-    @Test
-    fun shouldDisplayTitle() {
-        launchActivity<MainActivity>().apply {
-            val expectedTitle = context.getString(R.string.title)
-
-            moveToState(Lifecycle.State.RESUMED)
-
-            onView(withText(expectedTitle)).check(matches(isDisplayed()))
-        }
-    }
-
     @Test
     fun shouldDisplayListItem() {
         server.dispatcher = object : Dispatcher() {

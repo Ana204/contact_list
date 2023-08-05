@@ -40,6 +40,4 @@ class UserUseCase @Inject constructor (
         val getTime = sharedPreferencesRepository.getTime()
         return getTime < currentTime
     }
-
-    //[UserEntity(id=1, img=image, name=ana, username=ana204)]
 }

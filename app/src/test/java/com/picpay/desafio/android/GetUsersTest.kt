@@ -2,17 +2,12 @@ package com.picpay.desafio.android
 
 import com.google.common.truth.Truth.assertThat
 import com.picpay.desafio.android.data.local.entity.UserEntity
-import com.picpay.desafio.android.data.repository.SharedPreferencesRepositoryImpl
-import com.picpay.desafio.android.data.repository.UserRepositoryCacheImpl
-import com.picpay.desafio.android.data.repository.UserRepositoryRemoteImpl
-import com.picpay.desafio.android.domain.model.User
 import com.picpay.desafio.android.domain.repository.SharedPreferencesRepository
 import com.picpay.desafio.android.domain.repository.UserRepositoryCache
 import com.picpay.desafio.android.domain.repository.UserRepositoryRemote
 import com.picpay.desafio.android.domain.useCase.UserUseCase
 import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import java.util.Calendar
@@ -23,7 +18,7 @@ class GetUsersTest {
     //retornar a lista de usuarios remoto
     @Test
     fun devePegarUsuariosDoRepositorioRemotoFazerCacheERetornarListaUsuarios() = runBlocking {
-        //given
+        //given - preparacao dos dados
         //criando mockks para as interfaces de Repository
         val repositoryRemote = mockk<UserRepositoryRemote>()
         val repositoryCache = mockk<UserRepositoryCache>()
@@ -43,7 +38,7 @@ class GetUsersTest {
         coEvery { repositoryRemote.getUserFromApi() } returns listOf(listUsersRemote)
         coEvery { sharedPreferences.saveTime(300000) } returns Unit
 
-        //when - chamando o metodo mockado
+        //when - executando a unidade que eu quero testar
         val useCase = UserUseCase(repositoryRemote, sharedPreferences, repositoryCache, calendar)
         val result = useCase.getUsers()
 

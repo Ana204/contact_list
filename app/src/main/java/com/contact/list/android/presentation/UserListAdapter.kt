@@ -1,0 +1,37 @@
+package com.contact.list.android.presentation
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.contact.list.android.R
+import com.contact.list.android.data.local.entity.UserEntity
+import com.contact.list.android.databinding.ListItemUserBinding
+
+class UserListAdapter : RecyclerView.Adapter<UserListItemViewHolder>() {
+
+    var users = emptyList<UserEntity>()
+        set(value) {
+            val result = DiffUtil.calculateDiff(
+                UserListDiffCallback(
+                    field,
+                    value
+                )
+            )
+            result.dispatchUpdatesTo(this)
+            field = value
+        }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserListItemViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_item_user, parent, false)
+        val binding = ListItemUserBinding.bind(view)
+        return UserListItemViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: UserListItemViewHolder, position: Int) {
+        holder.bind(users[position])
+    }
+
+    override fun getItemCount(): Int = users.size
+}

@@ -11,7 +11,7 @@ The following tools were used in building the project:
 - Coroutines
 - Dagger:hilt
 - Mockk
-- Kunit
+- Junit
 
 <h1 align="center">
   <img alt="contactList" title="#contactList" src="https://github.com/Ana204/contact_list/blob/main/app/src/main/java/com/contact/list/android/raw/list_contact.gif" />
